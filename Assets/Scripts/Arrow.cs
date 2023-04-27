@@ -12,14 +12,14 @@ public class Arrow : MonoBehaviour
    
     void Start()
     {
-        rigidBody = GetComponent<Rigidbody2D>();
         player = FindObjectOfType<PlayerMovement>();
+        rigidBody = GetComponent<Rigidbody2D>();
         xSpeed = player.transform.localScale.x * arrowSpeed;
     }
 
     void Update()
     {
-        rigidBody.velocity = new Vector2(arrowSpeed, 0f);
+        rigidBody.velocity = new Vector2(xSpeed, 0f);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -29,6 +29,7 @@ public class Arrow : MonoBehaviour
             Destroy(collision.gameObject);
             Destroy(gameObject);
         }
+        Destroy(gameObject, 0.3f);
         
     }
 }

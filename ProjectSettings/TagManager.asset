@@ -20,7 +20,7 @@ TagManager:
   - Enemy
   - Hazards
   - Arrow
-  - 
+  - Interactables
   - 
   - 
   - 
@@ -51,11 +51,14 @@ TagManager:
   - name: Bouncing
     uniqueID: 262517243
     locked: 0
-  - name: Player
-    uniqueID: 365721059
+  - name: Interactables
+    uniqueID: 388637713
     locked: 0
   - name: Enemy
     uniqueID: 2579240385
+    locked: 0
+  - name: Player
+    uniqueID: 365721059
     locked: 0
   - name: Hazards
     uniqueID: 2261610019

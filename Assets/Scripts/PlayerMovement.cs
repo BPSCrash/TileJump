@@ -13,6 +13,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] bool isPlayerAlive = true;
     [SerializeField] GameObject arrow;
     [SerializeField] Transform bow;
+    bool isJumping = false;
    
     Animator animator;
     Rigidbody2D rigidBody;
@@ -30,33 +31,36 @@ public class PlayerMovement : MonoBehaviour
         feetCollider2D = GetComponent<BoxCollider2D>();
         gravityScaleAtStart = rigidBody.gravityScale;
         isPlayerAlive = true;
+ 
     }
 
 
     void Update()
     {
         if (!isPlayerAlive) { return; }
-        Run();
         FlipSprite();
-        ClimbLadder();
+        Run();
+        isPlayerJumping();
         Die();
+        ClimbLadder();
 
     }
-
 
     void OnMove(InputValue value)
     {
         if (!isPlayerAlive) { return; }
         moveInput = value.Get<Vector2>();
+        Debug.Log(moveInput);
     }
 
     void OnJump(InputValue value)
     {
         if (!isPlayerAlive) { return; }
-        if (!feetCollider2D.IsTouchingLayers(LayerMask.GetMask("Ground"))) { return; }
+        if (!feetCollider2D.IsTouchingLayers(LayerMask.GetMask("Ground","Climbable"))) { return; }
 
         if (value.isPressed)
         {
+            isJumping = true;
             rigidBody.velocity += new Vector2(0f, jumpSpeed);
         }
 
@@ -67,6 +71,17 @@ public class PlayerMovement : MonoBehaviour
         if(!isPlayerAlive) { return; }
         if(value.isPressed)
         {
+            ShootArrow();
+        }
+    }
+
+    void ShootArrow()
+    {
+        if(rigidBody.transform.localScale.x < Mathf.Epsilon)
+        {
+            Instantiate(arrow, bow.position, transform.rotation * Quaternion.Euler(0f, 180f, 0f));
+        } else if(rigidBody.transform.localScale.x > Mathf.Epsilon) 
+        {
             Instantiate(arrow, bow.position, transform.rotation);
         }
     }
@@ -76,7 +91,8 @@ public class PlayerMovement : MonoBehaviour
 
         bool playerHasVerticalSpeed = Mathf.Abs(rigidBody.velocity.y) > Mathf.Epsilon;
 
-        if (!feetCollider2D.IsTouchingLayers(LayerMask.GetMask("Climbable"))) { rigidBody.gravityScale = gravityScaleAtStart; animator.SetBool("isClimbing", false); return; }
+        if (!feetCollider2D.IsTouchingLayers(LayerMask.GetMask("Climbable"))){ rigidBody.gravityScale = gravityScaleAtStart; animator.SetBool("isClimbing", false); return; }
+        if (isJumping) { return;  }
 
         rigidBody.gravityScale = 0f; 
         Vector2 playerClimbVelocity = new Vector2(rigidBody.velocity.x, moveInput.y * climbSpeed);
@@ -87,23 +103,25 @@ public class PlayerMovement : MonoBehaviour
 
     void Run()
     {
-        bool playerHasHorizontalSpeed = Mathf.Abs(rigidBody.velocity.x) > Mathf.Epsilon;
-
         Vector2 playerVelocity = new Vector2(moveInput.x * moveSpeed, rigidBody.velocity.y);
         rigidBody.velocity = playerVelocity;
 
+        bool playerHasHorizontalSpeed = Mathf.Abs(rigidBody.velocity.x) > Mathf.Epsilon;
         animator.SetBool("isRunning", playerHasHorizontalSpeed);
 
     }
     private void FlipSprite()
     {
+        if(moveInput.Equals(new Vector2(0f, 0f))){
+            return;
+        }
         bool playerHasHorizontalSpeed = Mathf.Abs(rigidBody.velocity.x) > Mathf.Epsilon;
 
         if (playerHasHorizontalSpeed)
         {
-            transform.localScale = new Vector2(MathF.Sign(rigidBody.velocity.x), 1f);
+            transform.localScale = new Vector2(Mathf.Sign(rigidBody.velocity.x), 1f);
+        } 
 
-        }
     }
 
     void Die()
@@ -111,11 +129,18 @@ public class PlayerMovement : MonoBehaviour
         if (bodyCollider2D.IsTouchingLayers(LayerMask.GetMask("Enemy", "Hazards")))
         {
             animator.SetTrigger("Dying");
-            Debug.Log("YOU DIED");
             isPlayerAlive = false;
-
             Vector2 playerVelocity = new Vector2(rigidBody.velocity.x * UnityEngine.Random.Range(12f, 20f), rigidBody.velocity.y * UnityEngine.Random.Range(12f, 20f));
             rigidBody.velocity = playerVelocity;
+            FindObjectOfType<GameSession>().ProcessPlayerDeath();
+        }
+    }
+
+    void isPlayerJumping()
+    {
+        if(rigidBody.velocity.y < 0)
+        {
+            isJumping = false;
         }
     }
 }

@@ -46,11 +46,11 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-
     void OnMove(InputValue value)
     {
         if (!isPlayerAlive) { return; }
         moveInput = value.Get<Vector2>();
+        Debug.Log(moveInput);
     }
 
     void OnJump(InputValue value)
@@ -103,24 +103,25 @@ public class PlayerMovement : MonoBehaviour
 
     void Run()
     {
-        bool playerHasHorizontalSpeed = Mathf.Abs(rigidBody.velocity.x) > 0;
-
         Vector2 playerVelocity = new Vector2(moveInput.x * moveSpeed, rigidBody.velocity.y);
         rigidBody.velocity = playerVelocity;
 
+        bool playerHasHorizontalSpeed = Mathf.Abs(rigidBody.velocity.x) > Mathf.Epsilon;
         animator.SetBool("isRunning", playerHasHorizontalSpeed);
 
     }
     private void FlipSprite()
     {
-
-        if (rigidBody.velocity.x < 0)
-        {
-            transform.localScale = new Vector3(-1f, 1f, 1f);
-        } else if (rigidBody.velocity.x > 0)
-        {
-            transform.localScale = new Vector3( 1f, 1f, 1f);
+        if(moveInput.Equals(new Vector2(0f, 0f))){
+            return;
         }
+        bool playerHasHorizontalSpeed = Mathf.Abs(rigidBody.velocity.x) > Mathf.Epsilon;
+
+        if (playerHasHorizontalSpeed)
+        {
+            transform.localScale = new Vector2(Mathf.Sign(rigidBody.velocity.x), 1f);
+        } 
+
     }
 
     void Die()
@@ -128,11 +129,10 @@ public class PlayerMovement : MonoBehaviour
         if (bodyCollider2D.IsTouchingLayers(LayerMask.GetMask("Enemy", "Hazards")))
         {
             animator.SetTrigger("Dying");
-            Debug.Log("YOU DIED");
             isPlayerAlive = false;
-
             Vector2 playerVelocity = new Vector2(rigidBody.velocity.x * UnityEngine.Random.Range(12f, 20f), rigidBody.velocity.y * UnityEngine.Random.Range(12f, 20f));
             rigidBody.velocity = playerVelocity;
+            FindObjectOfType<GameSession>().ProcessPlayerDeath();
         }
     }
 

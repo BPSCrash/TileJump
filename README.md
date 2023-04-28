@@ -15,4 +15,4 @@ A 2D platformer made with the New Unity input system for movement, Tilemap based
 ## :camera_flash: Caught in (almost) 4K
 For this project I learned about particle systems, and using cinemachine.
 
-![](https://github.com/BPSCrash/TileJump/blob/main/tilejump.png)
+![](https://github.com/BPSCrash/TileJump/blob/main/png.png)

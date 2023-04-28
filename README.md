@@ -1,6 +1,6 @@
 # :snowboarder: Tile Jump!
 
-Put that board under your feet and spin-up some sick tricks, reach the end and win! <br />
+Jump! Shoot! Escape! Go for Score or go for Style in this brutal platformer that will test your skills! <br />
 A simple sprite shape level with some particle systems, follow camera, all propelled by a Surface Effector.
 
 ## :keyboard: How to use

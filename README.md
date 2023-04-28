@@ -13,6 +13,6 @@ A 2D platformer made with the New Unity input system for movement, Tilemap based
 - Collect Coins to increase score :moneybag:
 
 ## :camera_flash: Caught in (almost) 4K
-For this project I learned about how to create tilemaps, do animation transitions, have state driven cameras, and much more.
+For this project I learned about how to create tilemaps and rule tiles, do animation transitions, have state driven cameras, and much more.
 
 ![](https://github.com/BPSCrash/TileJump/blob/main/png.png)

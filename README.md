@@ -1,4 +1,4 @@
-# :snowboarder: Tile Jump!
+# :running: Tile Jump!
 
 Jump! Shoot! Escape! Go for Score or go for style in this brutal platformer that will test your skills! <br />
 A 2D platformer made with the New Unity input system for movement, Tilemap based levels with enemies, everything being easily expandable. Three state driven cameras for: idle, running and climbing. This is my most complex 2D game so far and the one that taught me the most.
